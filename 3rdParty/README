@@ -1,0 +1,3 @@
+libelf was taken from the dtrace project on opensource.apple.com.
+
+There is a SHIM function in msg.h that is part of dtrace. It cannot be removed, and I don't understand why. Instead there is the workaround.c file.

@@ -1,0 +1,7 @@
+xcuserdata
+*.xcworkspace
+!default.xcworkspace
+build
+builds
+English.lproj/.DS_Store
+.DS_Store
