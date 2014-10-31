@@ -99,13 +99,18 @@
 
 		if ([currentSection.sectionName hasPrefix:@"Last Exception Backtrace"]) {
 			ExceptionTraceLine *etl = [ExceptionTraceLine buildWithLine:line andBlackboard:self.bb];
-			
-			if (etl)
-				[self.parsedLines addObject:etl];
-			else
-				NSLog(@"Expected exception backtrace at line: %lu", idx);
-			
-			currentSection = nil;
+			StackFrameLine *stl = [StackFrameLine buildWithLine:line andBlackboard:self.bb];
+
+			if (stl) {
+				[self.parsedLines addObject:stl];
+			} else {
+				if (etl)
+					[self.parsedLines addObject:etl];
+				else
+					NSLog(@"Expected exception backtrace at line: %lu", idx);
+				
+				currentSection = nil;
+			}
 		} else if ([currentSection.sectionName hasPrefix:@"Binary Images"]) {
 			BinaryImageLine *bil = [BinaryImageLine buildWithLine:line];
 			
