@@ -49,24 +49,26 @@
 																	  usingBlock:^(NSNotification *note) {
 																		  @synchronized(rc) {
 																			  NSMetadataQuery *query = (NSMetadataQuery *)note.object;
-																			  
-																			  [query enumerateResultsUsingBlock:^(id result, NSUInteger idx, BOOL *stop) {
-																				  NSMetadataItem *item = result;
-																				  NSString *path = [item valueForKey:NSMetadataItemPathKey];
-																				  NSArray *dSyms = [item valueForKey:@"com_apple_xcode_dsym_paths"];
 
-																				  if (dSyms.count > 0) {
-																					  for (NSString *sym in dSyms)
-																						  [rc.paths addObject:[path stringByAppendingPathComponent:sym]];
+																			  if ([rc.queries containsObject:query]) {
+																				  [query enumerateResultsUsingBlock:^(id result, NSUInteger idx, BOOL *stop) {
+																					  NSMetadataItem *item = result;
+																					  NSString *path = [item valueForKey:NSMetadataItemPathKey];
+																					  NSArray *dSyms = [item valueForKey:@"com_apple_xcode_dsym_paths"];
+																					  
+																					  if (dSyms.count > 0) {
+																						  for (NSString *sym in dSyms)
+																							  [rc.paths addObject:[path stringByAppendingPathComponent:sym]];
+																					  }
+																				  }];
+																				  
+																				  [query stopQuery];
+																				  [rc.queries removeObject:query];
+																				  
+																				  if (rc.queries.count == 0) {
+																					  [rc.bb symbolicateWithPaths:rc.paths binaryInfo:rc.binaryImageLines];
+																					  [rc write];
 																				  }
-																			  }];
-																			  
-																			  [query stopQuery];
-																			  [rc.queries removeObject:query];
-																			  
-																			  if (rc.queries.count == 0) {
-																				  [rc.bb symbolicateWithPaths:rc.paths binaryInfo:rc.binaryImageLines];
-																				  [rc write];
 																			  }
 																		  }
 																	  }];
