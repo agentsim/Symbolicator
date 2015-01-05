@@ -150,11 +150,12 @@ int dwarfRelocateASection(void* obj, Dwarf_Half section_index, Dwarf_Debug dbg, 
 				NSLog(@"Failed to get arange info for addr %@: %s", a, dwarf_errmsg(err));
 			}
 			
-			dwarf_dealloc(self.dbg, arange, DW_DLA_ARANGE);
 		} else {
 			NSLog(@"Failed to get arange for addr %@: %s", a, dwarf_errmsg(err));
 		}
 	}];
+
+	dwarf_dealloc(self.dbg, addressRangesBuffer, DW_DLA_ARANGE);
 
 	return rc;
 }
